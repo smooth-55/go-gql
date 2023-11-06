@@ -1,0 +1,10 @@
+# air.toml
+root = "." # This should be the root directory of your project.
+
+[build]
+  bin = "graphql-go" # Replace with your Go binary name.
+  cmd = "go build -o graphql-go" # Replace with your build command.
+  watch = [".go$", ".html$", ".css$", ".js$"] # File extensions to watch for changes.
+
+[log]
+  mode = "console" # You can also set it to "console" if you prefer console output.
