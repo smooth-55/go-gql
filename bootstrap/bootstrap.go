@@ -4,8 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/smooth-55/graphql-go/apps/user"
-	"github.com/smooth-55/graphql-go/gql"
+	"github.com/smooth-55/graphql-go/config"
 	"github.com/smooth-55/graphql-go/infrastructure"
 	"github.com/smooth-55/graphql-go/routes"
 	"go.uber.org/fx"
@@ -13,9 +12,7 @@ import (
 
 var Module = fx.Options(
 	infrastructure.Module,
-	routes.Module,
-	gql.Module,
-	user.Module,
+	config.InstalledModule,
 	fx.Invoke(bootstrap),
 )
 
