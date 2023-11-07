@@ -1,35 +1,44 @@
 package gql
 
-import "github.com/graphql-go/graphql"
+import (
+	"github.com/graphql-go/graphql"
+	"github.com/smooth-55/graphql-go/apps/user"
+)
 
-var RootQuery = graphql.NewObject(graphql.ObjectConfig{
-	Name: "Query",
-	Fields: graphql.Fields{
-		"todos": &graphql.Field{
-			Type: graphql.NewList(TodoType),
-			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-				todos := []Todo{
-					{Id: "1", Title: "title"},
-				}
-				return todos, nil
-			},
-		},
-		"todo": &graphql.Field{
-			Type: TodoType,
-			Args: graphql.FieldConfigArgument{
+type RootGql struct {
+	userQuery    user.Query
+	userMutation user.Mutation
+}
 
-				"id": &graphql.ArgumentConfig{
-					Type: graphql.NewNonNull(graphql.String),
-				},
-			},
-			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-				var todo = Todo{
-					Id:    p.Args["id"].(string),
-					Title: "this is title",
-				}
-				// Implement your logic to fetch a todo by ID
-				return todo, nil
-			},
+func NewRootGql(
+	userQuery user.Query,
+	userMutation user.Mutation,
+) RootGql {
+	return RootGql{
+		userQuery:    userQuery,
+		userMutation: userMutation,
+	}
+}
+
+func (r RootGql) GetRootQuery() *graphql.Object {
+	var rootQuery = graphql.NewObject(graphql.ObjectConfig{
+		Name: "Query",
+		Fields: graphql.Fields{
+			"users": r.userQuery.GetAllUserField(),
+			"user":  r.userQuery.GetOneUserField(),
 		},
-	},
-})
+	})
+	return rootQuery
+
+}
+
+func (r RootGql) GetRootMutation() *graphql.Object {
+	var rootQuery = graphql.NewObject(graphql.ObjectConfig{
+		Name: "Mutation",
+		Fields: graphql.Fields{
+			"createUser": r.userMutation.CreateUserField(),
+		},
+	})
+	return rootQuery
+
+}
