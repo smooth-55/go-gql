@@ -2,41 +2,38 @@ package gql
 
 import (
 	"github.com/graphql-go/graphql"
+	"github.com/smooth-55/graphql-go/apps/todo"
 	"github.com/smooth-55/graphql-go/apps/user"
 )
 
-type RootGql struct {
+type RootQuery struct {
 	userQuery    user.Query
+	todoQuery    todo.Query
 	userMutation user.Mutation
 }
 
-func NewRootGql(
+func NewRootQuery(
 	userQuery user.Query,
 	userMutation user.Mutation,
-) RootGql {
-	return RootGql{
+
+	todoQuery todo.Query,
+
+) RootQuery {
+	return RootQuery{
 		userQuery:    userQuery,
 		userMutation: userMutation,
+		todoQuery:    todoQuery,
 	}
 }
 
-func (r RootGql) GetRootQuery() *graphql.Object {
+func (r RootQuery) GetQuery() *graphql.Object {
 	var rootQuery = graphql.NewObject(graphql.ObjectConfig{
 		Name: "Query",
 		Fields: graphql.Fields{
 			"users": r.userQuery.GetAllUserField(),
 			"user":  r.userQuery.GetOneUserField(),
-		},
-	})
-	return rootQuery
-
-}
-
-func (r RootGql) GetRootMutation() *graphql.Object {
-	var rootQuery = graphql.NewObject(graphql.ObjectConfig{
-		Name: "Mutation",
-		Fields: graphql.Fields{
-			"createUser": r.userMutation.CreateUserField(),
+			"todos": r.todoQuery.GetAllTodoField(),
+			// add other queries
 		},
 	})
 	return rootQuery
