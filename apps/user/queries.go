@@ -8,11 +8,11 @@ import (
 )
 
 type Query struct {
-	types UserTypes
+	types Types
 }
 
 func NewQuery(
-	types UserTypes,
+	types Types,
 
 ) Query {
 	return Query{
