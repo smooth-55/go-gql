@@ -1,14 +1,40 @@
 package routes
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/graphql-go/graphql"
 	"github.com/smooth-55/graphql-go/gql"
 	"github.com/smooth-55/graphql-go/infrastructure"
 )
 
-func Handler(c *gin.Context) {
+type Handler struct {
+	gql gql.RootGql
+}
+
+func NewHandler(
+	gql gql.RootGql,
+) Handler {
+	return Handler{
+		gql: gql,
+	}
+}
+
+func (h Handler) GetSchema() *graphql.Schema {
+	var Schema, err = graphql.NewSchema(graphql.SchemaConfig{
+		Query:    h.gql.GetRootQuery(),
+		Mutation: h.gql.GetRootMutation(),
+	})
+	if err != nil {
+		panic(err)
+	}
+	return &Schema
+}
+
+func (h Handler) RequestHandler(c *gin.Context) {
 	// Parse the incoming JSON data
+	fmt.Println("inside handlerssok")
 	var requestData map[string]interface{}
 	if err := c.BindJSON(&requestData); err != nil {
 		c.JSON(400, gin.H{"message": "Invalid request"})
@@ -19,7 +45,7 @@ func Handler(c *gin.Context) {
 	query, _ := requestData["query"].(string)
 
 	result := graphql.Do(graphql.Params{
-		Schema:        gql.Schema,
+		Schema:        *h.GetSchema(),
 		RequestString: query,
 	})
 
@@ -34,16 +60,19 @@ func Handler(c *gin.Context) {
 
 // UserRoutes struct
 type HandlerRoutes struct {
-	router infrastructure.Router
+	router  infrastructure.Router
+	handler Handler
 }
 
 // NewUserRoutes creates new user controller
 func NewHandlerRoutes(
 	router infrastructure.Router,
+	handler Handler,
 
 ) HandlerRoutes {
 	return HandlerRoutes{
-		router: router,
+		router:  router,
+		handler: handler,
 	}
 }
 
@@ -56,6 +85,6 @@ func (i HandlerRoutes) Setup() {
 				"message": "Graphql playground",
 			})
 		})
-		gql.POST("/gql", Handler)
+		gql.POST("/gql", i.handler.RequestHandler)
 	}
 }
