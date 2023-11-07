@@ -10,21 +10,24 @@ import (
 )
 
 type Handler struct {
-	gql gql.RootGql
+	query    gql.RootQuery
+	mutation gql.RootMutation
 }
 
 func NewHandler(
-	gql gql.RootGql,
+	query gql.RootQuery,
+	mutation gql.RootMutation,
 ) Handler {
 	return Handler{
-		gql: gql,
+		query:    query,
+		mutation: mutation,
 	}
 }
 
 func (h Handler) GetSchema() *graphql.Schema {
 	var Schema, err = graphql.NewSchema(graphql.SchemaConfig{
-		Query:    h.gql.GetRootQuery(),
-		Mutation: h.gql.GetRootMutation(),
+		Query:    h.query.GetQuery(),
+		Mutation: h.mutation.GetMutation(),
 	})
 	if err != nil {
 		panic(err)
