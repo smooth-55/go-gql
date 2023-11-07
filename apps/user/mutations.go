@@ -3,11 +3,11 @@ package user
 import "github.com/graphql-go/graphql"
 
 type Mutation struct {
-	types UserTypes
+	types Types
 }
 
 func NewMutation(
-	types UserTypes,
+	types Types,
 ) Mutation {
 	return Mutation{
 		types: types,
