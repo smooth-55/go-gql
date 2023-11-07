@@ -2,11 +2,11 @@ package user
 
 import "github.com/graphql-go/graphql"
 
-type UserTypes struct{}
+type Types struct{}
 
-func NewUserTypes() UserTypes { return UserTypes{} }
+func NewTypes() Types { return Types{} }
 
-func (u UserTypes) GetAllUserType(typeName string) *graphql.Object {
+func (u Types) GetAllUserType(typeName string) *graphql.Object {
 
 	return graphql.NewObject(graphql.ObjectConfig{
 		Name: typeName,
@@ -28,7 +28,7 @@ func (u UserTypes) GetAllUserType(typeName string) *graphql.Object {
 
 }
 
-func (u UserTypes) UserResponseType() *graphql.Object {
+func (u Types) UserResponseType() *graphql.Object {
 
 	return graphql.NewObject(graphql.ObjectConfig{
 		Name: "UserType",
@@ -49,7 +49,7 @@ func (u UserTypes) UserResponseType() *graphql.Object {
 	})
 }
 
-func (u UserTypes) CreateUserInputType() *graphql.InputObject {
+func (u Types) CreateUserInputType() *graphql.InputObject {
 	obj := graphql.NewInputObject(graphql.InputObjectConfig{
 		Name: "CreateTodoInput",
 		Fields: graphql.InputObjectConfigFieldMap{
